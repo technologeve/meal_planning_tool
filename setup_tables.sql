@@ -1,4 +1,4 @@
--- setup database
+-- setup database --
 
 CREATE DATABASE meal_planning;
 USE meal_planning;

@@ -13,7 +13,7 @@ Delimiter //
  *   mealName, VARCHAR(100): Name of the meal for which you want the
  * 							 recipe, as appears in 'meals' table
  */
-create procedure get_recipe (mealName VARCHAR(100), keepId BOOL)
+create procedure get_recipe (mealName VARCHAR(100))
 BEGIN
     select ri.amount, i.measurement_unit, i.ingredient_name
 	from recipe_ingredient ri 

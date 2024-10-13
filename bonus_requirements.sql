@@ -32,7 +32,7 @@ CALL get_recipe("Chicken fajitas");
 
 
 -- get the nutritional values for a meal
-drop procedure get_recipe;
+drop procedure get_nutrition_for_meal;
 Delimiter //
 /**
  * get_nutrition_for_meal
@@ -46,7 +46,7 @@ Delimiter //
 create procedure get_nutrition_for_meal(mealName VARCHAR(100))
 BEGIN
 	-- filter to just nutrition info
-	select 
+    select 
 		   -- calculate total nutrition for meal
            sum(nutrition_measurements.nutrition_for_recipe) as nutrition_amt, 
 		   rn.nutrition_units,
@@ -73,8 +73,42 @@ BEGIN
     
     -- tally all the ingredients in a meal together by nutrition count
 	group by rn.nutrition_name, rn.daily_nutrition, rn.nutrition_units;
+    select * from nutrition_view;
 END//
 DELIMITER ;
 
 -- example usage --
 CALL get_nutrition_for_meal("Chicken fajitas");
+
+drop view nutrition_view;
+create view nutrition_view as
+select 
+		   -- calculate total nutrition for meal
+           round(sum(nutrition_measurements.nutrition_for_recipe), 2) as nutrition_amt, 
+		   rn.nutrition_units,
+		   rn.nutrition_name,
+           nutrition_measurements.meal_id,
+           -- compare total meal nutrition to daily reference values
+		   round(100 *sum(nutrition_measurements.nutrition_for_recipe) / rn.daily_nutrition, 2) as percentage_of_daily_ref
+		   
+	-- join nutrition info and recipe
+    from reference_nutrition rn 
+	join 
+		(select joined_table.ingredient_name, joined_table.ingredient_id, joined_table.meal_id, i_n.nutrition_id, round(i_n.amount * joined_table.amount, 2) as nutrition_for_recipe
+		from ingredient_nutrition i_n
+		join (select ri.amount, ri.meal_id, i.measurement_unit, i.ingredient_name, i.ingredient_id  
+			from recipe_ingredient ri 
+			join ingredients i 
+			-- Join the ingredient measurements with their names
+			where i.ingredient_id = ri.ingredient_id) joined_table
+		where joined_table.ingredient_id = i_n.ingredient_id) 
+	nutrition_measurements
+	where rn.nutrition_id = nutrition_measurements.nutrition_id
+    
+    -- tally all the ingredients in a meal together by nutrition count
+	group by rn.nutrition_name, rn.daily_nutrition, rn.nutrition_units, nutrition_measurements.meal_id;
+   
+
+-- example use --
+select * from nutrition_view;
+    

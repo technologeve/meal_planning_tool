@@ -1,7 +1,7 @@
 
 use meal_planning;
 
--- Create a view --
+-- Create a view: only meals which are recorded as dinners --
 drop view dinners;
 
 create view dinners as 
@@ -10,7 +10,7 @@ where m.meal_type = "Dinner";
 
 select * from dinners;
 
--- Create a view which uses a join --
+-- Create a view which uses a join: only meals which don't use tinned tomatoes --
 drop view no_tinned_tomatoes;
 
 create view no_tinned_tomatoes as

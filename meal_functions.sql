@@ -43,7 +43,7 @@ select * from ingredient_count_view;
 select * from ingredient_count_view icv 
 where icv.ingredient_count =
 (
-	select max(ingredient_count)
+	select min(ingredient_count)
 	from ingredient_count_view
 );
 

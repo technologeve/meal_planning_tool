@@ -73,13 +73,14 @@ BEGIN
     
     -- tally all the ingredients in a meal together by nutrition count
 	group by rn.nutrition_name, rn.daily_nutrition, rn.nutrition_units;
-    select * from nutrition_view;
 END//
 DELIMITER ;
 
 -- example usage --
 CALL get_nutrition_for_meal("Chicken fajitas");
 
+
+-- view with 3-4  base tables --
 drop view nutrition_view;
 create view nutrition_view as
 select 

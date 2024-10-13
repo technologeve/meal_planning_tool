@@ -26,7 +26,8 @@ select get_ingredient_count("Brioche");
 
 
 
--- Also turn this functionality in to a view
+-- Also turn this functionality in to a view --
+-- This includes a subquery --
 drop view ingredient_count_view;
 
 create view ingredient_count_view as
@@ -46,3 +47,12 @@ where icv.ingredient_count =
 	from ingredient_count_view
 );
 
+-- aditional example query with subquery --
+-- find the nutritional info for chicken --
+select * from ingredient_nutrition;
+select * from ingredient_nutrition i_n where 
+i_n.ingredient_id = (
+	select i.ingredient_id
+	from ingredients i 
+	where i.ingredient_name = "Chicken"	
+);
